@@ -1,0 +1,8 @@
+.XS-hierarchies {
+  display: flex;
+  align-items: baseline;
+}
+
+#trwHierarchy {
+  padding-left: 100px;
+}

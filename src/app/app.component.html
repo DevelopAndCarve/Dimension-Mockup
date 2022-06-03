@@ -1,0 +1,76 @@
+<div class="XS-hierarchies">
+  <kendo-treeview
+    [nodes]="data.dimensions"
+    textField="text"
+    kendoTreeViewHierarchyBinding
+    childrenField="items"
+    kendoTreeViewExpandable
+    expandBy="id"
+    [expandedKeys]="[1]"
+    kendoTreeViewDragAndDrop
+    kendoTreeViewDragAndDropEditing
+    (nodeDragStart)="log('nodeDragStart', $event)"
+    (nodeDrag)="log('nodeDrag', $event)"
+    (nodeDrop)="handleDrop($event)"
+    (addItem)="log('addItem', $event)"
+    (removeItem)="log('removeItem', $event)"
+    (nodeDragEnd)="log('nodeDragEnd', $event)"
+  >
+    <ng-template kendoTreeViewNodeTemplate let-dataItem>
+      <span [ngClass]="iconClass(dataItem)"></span>
+      {{ dataItem.text }}
+    </ng-template>
+    <ng-template
+      kendoTreeViewDragClueTemplate
+      let-action="action"
+      let-destinationItem="destinationItem"
+      let-text="text"
+    >
+      <span
+        class="k-drag-status k-icon"
+        [ngClass]="getDragStatus(action, destinationItem)"
+      ></span>
+      <span>{{ text }}</span>
+    </ng-template>
+  </kendo-treeview>
+
+  <kendo-treeview
+    id="trwHierarchy"
+    [nodes]="data.hierarchies"
+    textField="text"
+    kendoTreeViewHierarchyBinding
+    childrenField="items"
+    kendoTreeViewExpandable
+    expandBy="id"
+    [expandedKeys]="[1]"
+    kendoTreeViewDragAndDrop
+    kendoTreeViewDragAndDropEditing
+    (nodeDragStart)="log('nodeDragStart', $event)"
+    (nodeDrag)="log('nodeDrag', $event)"
+    (nodeDrop)="handleDrop($event)"
+    (addItem)="log('addItem', $event)"
+    (removeItem)="log('removeItem', $event)"
+    (nodeDragEnd)="log('nodeDragEnd', $event)"
+  >
+    <ng-template kendoTreeViewNodeTemplate let-dataItem>
+      <span [ngClass]="iconClass(dataItem)"></span>
+      {{ dataItem.text }}
+      <span
+        [ngClass]="addIconClass(dataItem)"
+        (click)="addHierLevel(dataItem)"
+      ></span>
+    </ng-template>
+    <ng-template
+      kendoTreeViewDragClueTemplate
+      let-action="action"
+      let-destinationItem="destinationItem"
+      let-text="text"
+    >
+      <span
+        class="k-drag-status k-icon"
+        [ngClass]="getDragStatus(action, destinationItem)"
+      ></span>
+      <span>{{ text }}</span>
+    </ng-template>
+  </kendo-treeview>
+</div>

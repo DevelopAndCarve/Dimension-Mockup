@@ -5,6 +5,7 @@ import {
   TreeItemLookup,
   DropAction,
 } from '@progress/kendo-angular-treeview';
+import { serverData } from './data.mocked';
 
 const isOfType = (fileName: string, ext: string) =>
   new RegExp(`.${ext}\$`).test(fileName);
@@ -12,112 +13,12 @@ const isFile = (name: string) => name.split('.').length > 1;
 
 @Component({
   selector: 'my-app',
-  template: `
-        <kendo-treeview
-            [nodes]="dimensions"
-            textField="text"
-            kendoTreeViewHierarchyBinding
-            childrenField="items"
-            kendoTreeViewExpandable
-            expandBy="id"
-            [expandedKeys]="[1]"
-            kendoTreeViewDragAndDrop
-            kendoTreeViewDragAndDropEditing
-            (nodeDragStart)="log('nodeDragStart', $event)"
-            (nodeDrag)="log('nodeDrag', $event)"
-            (nodeDrop)="handleDrop($event)"
-            (addItem)="log('addItem', $event)"
-            (removeItem)="log('removeItem', $event)"
-            (nodeDragEnd)="log('nodeDragEnd', $event)"
-        >
-            <ng-template kendoTreeViewNodeTemplate let-dataItem>
-                <span [ngClass]="iconClass(dataItem)"></span>
-                {{ dataItem.text }}
-            </ng-template>
-            <ng-template kendoTreeViewDragClueTemplate let-action="action" let-destinationItem="destinationItem" let-text="text">
-                <span class="k-drag-status k-icon" [ngClass]="getDragStatus(action, destinationItem)"></span>
-                <span>{{ text }}</span>
-            </ng-template>
-        </kendo-treeview>
-
-        <kendo-treeview
-            [nodes]="hierarchies"
-            textField="text"
-            kendoTreeViewHierarchyBinding
-            childrenField="items"
-            kendoTreeViewExpandable
-            expandBy="id"
-            [expandedKeys]="[1]"
-            kendoTreeViewDragAndDrop
-            kendoTreeViewDragAndDropEditing
-            (nodeDragStart)="log('nodeDragStart', $event)"
-            (nodeDrag)="log('nodeDrag', $event)"
-            (nodeDrop)="handleDrop($event)"
-            (addItem)="log('addItem', $event)"
-            (removeItem)="log('removeItem', $event)"
-            (nodeDragEnd)="log('nodeDragEnd', $event)"
-        >
-            <ng-template kendoTreeViewNodeTemplate let-dataItem>
-                <span [ngClass]="iconClass(dataItem)"></span>
-                {{ dataItem.text }}
-            </ng-template>
-            <ng-template kendoTreeViewDragClueTemplate let-action="action" let-destinationItem="destinationItem" let-text="text">
-                <span class="k-drag-status k-icon" [ngClass]="getDragStatus(action, destinationItem)"></span>
-                <span>{{ text }}</span>
-            </ng-template>
-        </kendo-treeview>
-    `,
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  public dimensions: any[] = [
-    {
-      id: 1,
-      text: 'Customer',
-      items: [
-        { id: -1, text: 'Ship-To' },
-        { id: 0, text: 'Planning Account' },
-        { id: 1, text: 'Sold-To' },
-        { id: 2, text: 'Level 2' },
-        { id: 3, text: 'Level 3' },
-        { id: 4, text: 'Level 4' },
-        { id: 5, text: 'Level 5' },
-        { id: 6, text: 'Total Customer' },
-      ],
-    },
-  ];
+  public data: serverData = new serverData();
 
-  public hierarchies: any[] = [
-    {
-      id: 1,
-      text: 'Hierarchies',
-      items: [
-        {
-          id: 2,
-          text: 'H1 - Commercial',
-          items: [
-            { id: -1, text: 'Ship-To' },
-            { id: 0, text: 'Planning Account' },
-            { id: 1, text: 'Sold-To' },
-            { id: 2, text: 'Level 2' },
-            { id: 3, text: 'Level 3' },
-            { id: 4, text: 'Level 4' },
-            { id: 5, text: 'Level 5' },
-            { id: 6, text: 'Total Customer' },
-          ],
-        },
-        {
-          id: 6,
-          text: 'H2 - Planning',
-          items: [
-            { id: 1, text: 'Sold-To' },
-            { id: 3, text: 'Level 3' },
-            { id: 5, text: 'Level 5' },
-            { id: 6, text: 'Total Customer' },
-          ],
-        },
-      ],
-    },
-  ];
   public iconClass({ text }: any): any {
     return {
       'k-i-file-pdf': isOfType(text, 'pdf'),
@@ -169,5 +70,17 @@ export class AppComponent {
     ) {
       event.setValid(false);
     }
+  }
+
+  public addHierLevel(node: any) {
+    alert('Add clicked');
+  }
+
+  public addIconClass(node: any) {
+    
+    return {
+      'k-i-add': node,
+      'k-icon': true,
+    };
   }
 }
