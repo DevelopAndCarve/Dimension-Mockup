@@ -71,8 +71,13 @@ export class AppComponent {
       event.setValid(false);
     }
   }
+  public addDimensionLevel(node: any) {
+    this.data.addDimensionLevel();
+  }
 
-  public addHierLevel(node: any) {}
+  public addHierarchy(node: any) {
+    this.data.addHierarchy();
+  }
 
   public addIconClass(node: any) {
     if (!node.isRoot) return null;

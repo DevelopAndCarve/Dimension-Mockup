@@ -19,6 +19,10 @@
     <ng-template kendoTreeViewNodeTemplate let-dataItem>
       <span [ngClass]="iconClass(dataItem)"></span>
       {{ dataItem.text }}
+      <span
+        [ngClass]="addIconClass(dataItem)"
+        (click)="addHierLevel(dataItem)"
+      ></span>
     </ng-template>
     <ng-template
       kendoTreeViewDragClueTemplate
