@@ -1,11 +1,11 @@
 export class serverData {
   public addDimensionLevel(): void {
     const dim = { id: 7, text: 'New Dimension' };
-    this.dimensions['items'].push(dim);
+    this.dimensions[0]['items'].push(dim);
   }
   public addHierarchy(): void {
-    const hier = { id: 10, text: 'New Hierarchy' };
-    this.hierarchies['items'].push(hier);
+    const hier = { id: 10, text: 'New Hierarchy', items: [] };
+    this.hierarchies[0]['items'].push(hier);
   }
 
   public dimensions: any[] = [

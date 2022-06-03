@@ -21,7 +21,7 @@
       {{ dataItem.text }}
       <span
         [ngClass]="addIconClass(dataItem)"
-        (click)="addHierLevel(dataItem)"
+        (click)="addDimensionLevel(dataItem)"
       ></span>
     </ng-template>
     <ng-template
@@ -61,7 +61,7 @@
       {{ dataItem.text }}
       <span
         [ngClass]="addIconClass(dataItem)"
-        (click)="addHierLevel(dataItem)"
+        (click)="addHierarchy(dataItem)"
       ></span>
     </ng-template>
     <ng-template
