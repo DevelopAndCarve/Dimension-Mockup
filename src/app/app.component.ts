@@ -72,12 +72,10 @@ export class AppComponent {
     }
   }
 
-  public addHierLevel(node: any) {
-    alert('Add clicked');
-  }
+  public addHierLevel(node: any) {}
 
   public addIconClass(node: any) {
-    
+    if (!node.isRoot) return null;
     return {
       'k-i-add': node,
       'k-icon': true,

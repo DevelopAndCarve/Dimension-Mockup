@@ -1,8 +1,14 @@
 export class serverData {
+  public addDimension(): void {
+    const dim = { id: 7, text: 'New Dimension' };
+    this.dimensions['items'].push(dim);
+  }
+
   public dimensions: any[] = [
     {
       id: 1,
       text: 'Customer',
+      isRoot: true,
       items: [
         { id: -1, text: 'Ship-To' },
         { id: 0, text: 'Planning Account' },
@@ -19,6 +25,7 @@ export class serverData {
   public hierarchies: any[] = [
     {
       id: 1,
+      isRoot: true,
       text: 'Hierarchies',
       items: [
         {
