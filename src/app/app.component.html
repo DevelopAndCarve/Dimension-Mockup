@@ -4,6 +4,7 @@
   <button>CUST</button><button>PROD</button><button>ART</button>
 </div>
 <div class="XS-hierarchies">
+  <!-- Node Description EDITOR-->
   <ng-template #editor>
     <div
       #editorContainer
@@ -23,6 +24,7 @@
     </div>
   </ng-template>
 
+  <!-- Treeview for DIMENSIONS -->
   <kendo-treeview
     #dimensions
     [nodes]="data.dimensions"
@@ -67,6 +69,7 @@
     </ng-template>
   </kendo-treeview>
 
+  <!-- Treeview for HIERARCHIES -->
   <kendo-treeview
     #hierarchies
     id="trwHierarchy"
