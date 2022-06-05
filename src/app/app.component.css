@@ -3,16 +3,25 @@
   align-items: baseline;
 }
 
-.XS-dimension-selector{
+.XS-dimension-selector {
   display: flex;
   align-items: baseline;
   flex-direction: row;
 }
 
-button{
+button {
   margin: 10px;
   background-color: cornflowerblue;
 }
 #trwHierarchy {
   padding-left: 100px;
+}
+.node-edit {
+  margin: -4px -8px;
+}
+.node-edit .k-button {
+  margin-left: 0.5em;
+}
+.node-edit .k-primary {
+  margin-left: 1em;
 }

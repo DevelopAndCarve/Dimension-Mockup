@@ -1,26 +1,27 @@
 <h1>Hierarchy Configurator</h1>
 <div></div>
-<div class="XS-dimension-selector"><button>CUST</button><button>PROD</button><button>ART</button></div>
-<div class="XS-hierarchies">
-
-<ng-template #editor>
-<div
-  #editorContainer
-  class="node-edit"
-  (focusout)="handleEditorFocusOut($event, editorContainer)"
->
-  <kendo-textbox
-    #textBox
-    name="text"
-    [formControl]="textFormControl"
-    (keydown.enter)="handleEditorEnter($event)"
-    (keydown.esc)="cancel()"
-  ></kendo-textbox>
-
-  <button kendoButton themeColor="primary" (click)="save()">Save</button>
-  <button kendoButton (click)="cancel()">Cancel</button>
+<div class="XS-dimension-selector">
+  <button>CUST</button><button>PROD</button><button>ART</button>
 </div>
-</ng-template>
+<div class="XS-hierarchies">
+  <ng-template #editor>
+    <div
+      #editorContainer
+      class="node-edit"
+      (focusout)="handleEditorFocusOut($event, editorContainer)"
+    >
+      <kendo-textbox
+        #textBox
+        name="text"
+        [formControl]="textFormControl"
+        (keydown.enter)="handleEditorEnter($event)"
+        (keydown.esc)="cancel()"
+      ></kendo-textbox>
+
+      <button kendoButton themeColor="primary" (click)="save()">Save</button>
+      <button kendoButton (click)="cancel()">Cancel</button>
+    </div>
+  </ng-template>
 
   <kendo-treeview
     #dimensions
@@ -32,6 +33,7 @@
     expandBy="id"
     [expandedKeys]="[1]"
     [dropZoneTreeViews]="[hierarchies]"
+    (selectionChange)="edit($event)"
     kendoTreeViewDragAndDrop
     kendoTreeViewDragAndDropEditing
     (nodeDragStart)="log('nodeDragStart', $event)"
@@ -42,8 +44,10 @@
     (nodeDragEnd)="log('nodeDragEnd', $event)"
   >
     <ng-template kendoTreeViewNodeTemplate let-dataItem>
-      <span [ngClass]="iconClass(dataItem)"></span>
-      {{ dataItem.text }}
+      <div *ngIf="activeItem?.dataItem?.id !== dataItem.id; else editor">
+        <span [ngClass]="iconClass(dataItem)"></span>
+        {{ dataItem.text }}
+      </div>
       <span
         [ngClass]="addIconClass(dataItem)"
         (click)="addDimensionLevel(dataItem)"
@@ -104,6 +108,4 @@
     </ng-template>
   </kendo-treeview>
 </div>
-<div>
-
-</div>
+<div></div>
