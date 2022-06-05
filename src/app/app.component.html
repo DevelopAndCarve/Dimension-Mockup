@@ -2,6 +2,26 @@
 <div></div>
 <div class="XS-dimension-selector"><button>CUST</button><button>PROD</button><button>ART</button></div>
 <div class="XS-hierarchies">
+
+<ng-template #editor>
+<div
+  #editorContainer
+  class="node-edit"
+  (focusout)="handleEditorFocusOut($event, editorContainer)"
+>
+  <kendo-textbox
+    #textBox
+    name="text"
+    [formControl]="textFormControl"
+    (keydown.enter)="handleEditorEnter($event)"
+    (keydown.esc)="cancel()"
+  ></kendo-textbox>
+
+  <button kendoButton themeColor="primary" (click)="save()">Save</button>
+  <button kendoButton (click)="cancel()">Cancel</button>
+</div>
+</ng-template>
+
   <kendo-treeview
     #dimensions
     [nodes]="data.dimensions"
@@ -83,4 +103,7 @@
       <span>{{ text }}</span>
     </ng-template>
   </kendo-treeview>
+</div>
+<div>
+
 </div>

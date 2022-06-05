@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import {
   TreeItemDropEvent,
   DropPosition,
   TreeItemLookup,
   DropAction,
+  TreeItem,
 } from '@progress/kendo-angular-treeview';
 import { serverData } from './data.mocked';
 
@@ -18,6 +20,10 @@ const isFile = (name: string) => name.split('.').length > 1;
 })
 export class AppComponent {
   public data: serverData = new serverData();
+  public activeItem: TreeItem;
+  public focusEditor: boolean;
+  public focusIndex: string;
+  public textFormControl: FormControl;
 
   public iconClass({ text }: any): any {
     return {
@@ -70,5 +76,63 @@ export class AppComponent {
       'k-i-add': node,
       'k-icon': true,
     };
+  }
+
+  public edit(item: TreeItem): void {
+    // skip editing if same node is passed
+    if (this.activeItem && this.activeItem.dataItem === item.dataItem) {
+      return;
+    }
+
+    this.activeItem = item;
+
+    this.focusEditor = true; // focus editor on next render
+    this.focusIndex = item.index; // book keeping of the edited node index
+
+    this.textFormControl = new FormControl(
+      item.dataItem.text,
+      Validators.required
+    );
+  }
+
+  public cancel(): void {
+    this.activeItem = null;
+    this.textFormControl = null;
+  }
+
+  public save(): void {
+    const { dataItem } = this.activeItem;
+
+    // return focus to input if invalid
+    if (this.textFormControl.invalid) {
+      this.focusEditor = true;
+      return;
+    }
+
+    // update the corresponding dataitem property
+    dataItem.text = this.textFormControl.value;
+
+    // close the editor
+    this.cancel();
+  }
+
+  public handleEditorEnter(event: any): void {
+    // prevent reopening the editor due to enter press
+    event.stopPropagation();
+
+    // persist the changes
+    this.save();
+  }
+
+  public handleEditorFocusOut(
+    event: FocusEvent,
+    editorContainer: HTMLElement
+  ): void {
+    const focusTarget = event.relatedTarget as HTMLElement;
+
+    // close the editor if the new focus target is not part of it
+    if (!editorContainer.contains(focusTarget)) {
+      this.cancel();
+    }
   }
 }
