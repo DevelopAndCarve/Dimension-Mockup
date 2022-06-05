@@ -3,6 +3,7 @@
 <div class="XS-dimension-selector"><button>CUST</button><button>PROD</button><button>ART</button></div>
 <div class="XS-hierarchies">
   <kendo-treeview
+    #dimensions
     [nodes]="data.dimensions"
     textField="text"
     kendoTreeViewHierarchyBinding
@@ -10,6 +11,7 @@
     kendoTreeViewExpandable
     expandBy="id"
     [expandedKeys]="[1]"
+    [dropZoneTreeViews]="[hierarchies]"
     kendoTreeViewDragAndDrop
     kendoTreeViewDragAndDropEditing
     (nodeDragStart)="log('nodeDragStart', $event)"
@@ -42,6 +44,7 @@
   </kendo-treeview>
 
   <kendo-treeview
+    #hierarchies
     id="trwHierarchy"
     [nodes]="data.hierarchies"
     textField="text"

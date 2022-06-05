@@ -33,14 +33,6 @@ export class AppComponent {
     action: DropAction,
     destinationItem: TreeItemLookup
   ): string {
-    if (
-      destinationItem &&
-      action === DropAction.Add &&
-      isFile(destinationItem.item.dataItem.text)
-    ) {
-      return 'k-i-cancel';
-    }
-
     switch (action) {
       case DropAction.Add:
         return 'k-i-plus';
@@ -62,14 +54,7 @@ export class AppComponent {
 
   public handleDrop(event: TreeItemDropEvent): void {
     this.log('nodeDrop', event);
-
-    // prevent drop if attempting to add to file
-    if (
-      isFile(event.destinationItem.item.dataItem.text) &&
-      event.dropPosition === DropPosition.Over
-    ) {
-      event.setValid(false);
-    }
+    this.log('nodeDrop Target', event.destinationItem.item);
   }
   public addDimensionLevel(node: any) {
     this.data.addDimensionLevel();
