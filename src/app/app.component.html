@@ -1,6 +1,11 @@
 <h1>Hierarchy Configurator</h1>
 <div style="display:flex;flex-direction:column">
+  <div>
+    <p>Divisions:</p>
+    <kendo-dropdownlist [data]="divisions"> </kendo-dropdownlist>
+  </div>
   <div class="XS-dimension-selector">
+    <p>Select Dimension to get started</p>
     <button (click)="onCustDimClick($event)">CUST</button>
     <button (click)="onProdDimClick($event)">PROD</button>
     <button (click)="onUsersDimClick($event)">USERS</button>

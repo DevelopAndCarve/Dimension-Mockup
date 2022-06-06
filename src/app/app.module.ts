@@ -6,6 +6,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DropDownsModule } from "@progress/kendo-angular-dropdowns";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -15,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     TreeViewModule,
     InputsModule,
+    DropDownsModule,
     ReactiveFormsModule,
     HttpClientModule,
     HttpClientJsonpModule,

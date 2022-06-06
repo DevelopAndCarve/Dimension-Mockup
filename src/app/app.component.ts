@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit {
   public selectedHierarchies: IDimensionNode[];
   public selectedDimensionCode: string = 'CUST';
   public dimensionForm: FormGroup;
-
+  public divisions:Array<string> = ['E001','BASE']
   public ngAfterViewInit(): void {
     this.selectedDimension = this.data.getDimensionLevelNodes('CUST');
     this.selectedHierarchies = this.data.getHierarchies('CUST');
