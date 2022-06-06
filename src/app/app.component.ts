@@ -27,8 +27,9 @@ export class AppComponent implements AfterViewInit {
   public selectedDimension: IDimensionNode[];
   public selectedHierarchies: IDimensionNode[];
   public selectedDimensionCode: string = 'CUST';
+  public selectedDivision = 'E001';
   public dimensionForm: FormGroup;
-  public divisions:Array<string> = ['E001','BASE']
+  public divisions: Array<string> = ['E001', 'BASE'];
   public ngAfterViewInit(): void {
     this.selectedDimension = this.data.getDimensionLevelNodes('CUST');
     this.selectedHierarchies = this.data.getHierarchies('CUST');
@@ -73,14 +74,17 @@ export class AppComponent implements AfterViewInit {
   }
 
   public addDimensionLevel(node: any) {
-    this.data.addDimensionLevel(this.selectedDimensionCode, 'E001');
+    this.data.addDimensionLevel(
+      this.selectedDimensionCode,
+      this.selectedDivision
+    );
     this.selectedDimension = this.data.getDimensionLevelNodes(
       this.selectedDimensionCode
     );
   }
 
   public addHierarchy(node: any) {
-    this.data.addHierarchy(this.selectedDimensionCode, 'E001');
+    this.data.addHierarchy(this.selectedDimensionCode, this.selectedDivision);
     this.selectedHierarchies = this.data.getHierarchies(
       this.selectedDimensionCode
     );
