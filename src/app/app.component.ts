@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   TreeItemDropEvent,
   DropPosition,
@@ -25,6 +25,8 @@ export class AppComponent implements AfterViewInit {
   public focusIndex: string;
   public textFormControl: FormControl;
   public selectedDimension: IDimensionNode[];
+
+  public dimensionForm: FormGroup;
 
   public ngAfterViewInit(): void {
     this.selectedDimension = this.data.customerLevels;
@@ -97,6 +99,7 @@ export class AppComponent implements AfterViewInit {
 
     this.activeItem = item;
 
+
     this.focusEditor = true; // focus editor on next render
     this.focusIndex = item.index; // book keeping of the edited node index
 
@@ -107,10 +110,12 @@ export class AppComponent implements AfterViewInit {
   }
 
   public editDimensionLevel(): void {
-    this.textFormControl = new FormControl(
-      this.activeItem.dataItem.text,
-      Validators.required
-    );
+    this.dimensionForm = new FormGroup({
+      textFormControl: new FormControl(
+        this.activeItem.dataItem.text,
+        Validators.required
+      )
+    });
   }
 
   public cancel(): void {

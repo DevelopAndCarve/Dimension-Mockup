@@ -1,5 +1,5 @@
 <h1>Hierarchy Configurator</h1>
-<div></div>
+<div style="display:flex;flex-direction:column">
 <div class="XS-dimension-selector">
   <button (click)="onCustDimClick($event)">CUST</button>
   <button (click)="onProdDimClick($event)">PROD</button>
@@ -101,4 +101,13 @@
     </ng-template>
   </kendo-treeview>
 </div>
-<div></div>
+<div id="dimensionForm" *ngIf="dimensionForm">
+  <form [formGroup]="dimensionForm">
+    <label for="dimensionCode">Dimension Code: </label>
+    <input id="dimensionCode" type="text" formControlName="dimensionCode" />
+    <label for="dimensionDescription">Dimension Description: </label>
+    <input id="dimensionDescription" type="text" formControlName="dimensionDescription" />
+  </form>
+</div>
+<div id="hierarchyForm"></div>
+</div>
