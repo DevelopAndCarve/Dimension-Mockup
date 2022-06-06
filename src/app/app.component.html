@@ -1,33 +1,21 @@
 <h1>Hierarchy Configurator</h1>
 <div></div>
 <div class="XS-dimension-selector">
-  <button>CUST</button><button>PROD</button><button>ART</button>
+  <button (click)="onCustDimClick($event)">CUST</button>
+  <button (click)="onProdDimClick($event)">PROD</button>
+  <button (click)="onUsersDimClick($event)">USERS</button>
 </div>
 <div class="XS-hierarchies">
   <!-- Node Description EDITOR-->
   <ng-template #editor>
-    <div
-      #editorContainer
-      class="node-edit"
-      (focusout)="handleEditorFocusOut($event, editorContainer)"
-    >
-      <kendo-textbox
-        #textBox
-        name="text"
-        [formControl]="textFormControl"
-        (keydown.enter)="handleEditorEnter($event)"
-        (keydown.esc)="cancel()"
-      ></kendo-textbox>
-
-      <button kendoButton themeColor="primary" (click)="save()">Save</button>
-      <button kendoButton (click)="cancel()">Cancel</button>
-    </div>
+    <span [ngClass]="addEditorClass()" (click)="editDimensionLevel()"></span>
+    {{ activeItem.dataItem.text }}
   </ng-template>
 
   <!-- Treeview for DIMENSIONS -->
   <kendo-treeview
     #dimensions
-    [nodes]="data.dimensions"
+    [nodes]="selectedDimension"
     textField="text"
     kendoTreeViewHierarchyBinding
     childrenField="items"
@@ -49,11 +37,11 @@
       <div *ngIf="activeItem?.dataItem?.id !== dataItem.id; else editor">
         <span [ngClass]="iconClass(dataItem)"></span>
         {{ dataItem.text }}
+        <span
+          [ngClass]="addIconClass(dataItem)"
+          (click)="addDimensionLevel(dataItem)"
+        ></span>
       </div>
-      <span
-        [ngClass]="addIconClass(dataItem)"
-        (click)="addDimensionLevel(dataItem)"
-      ></span>
     </ng-template>
     <ng-template
       kendoTreeViewDragClueTemplate
@@ -90,12 +78,14 @@
     (nodeDragEnd)="log('nodeDragEnd', $event)"
   >
     <ng-template kendoTreeViewNodeTemplate let-dataItem>
-      <span [ngClass]="iconClass(dataItem)"></span>
-      {{ dataItem.text }}
-      <span
-        [ngClass]="addIconClass(dataItem)"
-        (click)="addHierarchy(dataItem)"
-      ></span>
+      <div>
+        <span [ngClass]="iconClass(dataItem)"></span>
+        <span>{{ dataItem.text }}</span>
+        <span
+          [ngClass]="addIconClass(dataItem)"
+          (click)="addHierarchy(dataItem)"
+        ></span>
+      </div>
     </ng-template>
     <ng-template
       kendoTreeViewDragClueTemplate

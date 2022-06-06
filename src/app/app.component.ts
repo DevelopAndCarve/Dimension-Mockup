@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   TreeItemDropEvent,
@@ -7,7 +7,7 @@ import {
   DropAction,
   TreeItem,
 } from '@progress/kendo-angular-treeview';
-import { serverData } from './data.mocked';
+import { IDimensionNode, serverData } from './data.mocked';
 
 const isOfType = (fileName: string, ext: string) =>
   new RegExp(`.${ext}\$`).test(fileName);
@@ -18,12 +18,17 @@ const isFile = (name: string) => name.split('.').length > 1;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   public data: serverData = new serverData();
   public activeItem: TreeItem;
   public focusEditor: boolean;
   public focusIndex: string;
   public textFormControl: FormControl;
+  public selectedDimension: IDimensionNode[];
+
+  public ngAfterViewInit(): void {
+    this.selectedDimension = this.data.customerLevels;
+  }
 
   public iconClass({ text }: any): any {
     return {
@@ -78,6 +83,12 @@ export class AppComponent {
     };
   }
 
+  public addEditorClass() {
+    return {
+      'k-i-edit': this.activeItem,
+      'k-icon': true,
+    };
+  }
   public edit(item: TreeItem): void {
     // skip editing if same node is passed
     if (this.activeItem && this.activeItem.dataItem === item.dataItem) {
@@ -91,6 +102,13 @@ export class AppComponent {
 
     this.textFormControl = new FormControl(
       item.dataItem.text,
+      Validators.required
+    );
+  }
+
+  public editDimensionLevel(): void {
+    this.textFormControl = new FormControl(
+      this.activeItem.dataItem.text,
       Validators.required
     );
   }
@@ -133,6 +151,29 @@ export class AppComponent {
     // close the editor if the new focus target is not part of it
     if (!editorContainer.contains(focusTarget)) {
       this.cancel();
+    }
+  }
+
+  public onCustDimClick(eventData: any) {
+    this.switchDimension('CUST');
+  }
+  public onProdDimClick(eventData: any) {
+    this.switchDimension('PROD');
+  }
+  public onUsersDimClick(eventData: any) {
+    this.switchDimension('USERS');
+  }
+  private switchDimension(dimension: string) {
+    switch (dimension) {
+      case 'CUST':
+        this.selectedDimension = this.data.customerLevels;
+        break;
+      case 'PROD':
+        this.selectedDimension = this.data.productLevels;
+        break;
+      case 'USERS':
+        this.selectedDimension = this.data.userLevels;
+        break;
     }
   }
 }

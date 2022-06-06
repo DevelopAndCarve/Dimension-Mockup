@@ -28,6 +28,7 @@
     "@progress/kendo-angular-treeview": "latest",
     "@progress/kendo-drawing": "latest",
     "@progress/kendo-licensing": "latest",
+    "lodash": "4.17.14",
     "core-js": "3.21.1",
     "rxjs": "7.5.2",
     "tslib": "2.3.0",

@@ -1,16 +1,23 @@
+export interface IDimensionNode {
+  id: number;
+  text: string;
+  isRoot: boolean;
+  items: { id: number; text: string }[];
+}
+
 export class serverData {
   public addDimensionLevel(): void {
     const dim = { id: 7, text: 'New Dimension' };
-    this.dimensions[0]['items'].push(dim);
+    this.customerLevels[0]['items'].push(dim);
   }
   public addHierarchy(): void {
     const hier = { id: 10, text: 'New Hierarchy', items: [] };
     this.hierarchies[0]['items'].push(hier);
   }
 
-  public dimensions: any[] = [
+  public customerLevels: IDimensionNode[] = [
     {
-      id: 1,
+      id: 10,
       text: 'Customer',
       isRoot: true,
       items: [
@@ -22,6 +29,31 @@ export class serverData {
         { id: 4, text: 'Level 4' },
         { id: 5, text: 'Level 5' },
         { id: 6, text: 'Total Customer' },
+      ],
+    },
+  ];
+
+  public userLevels: IDimensionNode[] = [
+    {
+      id: 10,
+      text: 'User',
+      isRoot: true,
+      items: [{ id: 0, text: 'Users' }],
+    },
+  ];
+  public productLevels: IDimensionNode[] = [
+    {
+      id: 10,
+      text: 'Product',
+      isRoot: true,
+      items: [
+        { id: 0, text: 'Product SKU' },
+        { id: 1, text: 'Product Consumer Unit' },
+        { id: 2, text: 'Planning Group' },
+        { id: 3, text: 'Level 2' },
+        { id: 4, text: 'Level 3' },
+        { id: 5, text: 'Level 4' },
+        { id: 6, text: 'Level 5' },
       ],
     },
   ];
