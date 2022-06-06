@@ -1,113 +1,117 @@
 <h1>Hierarchy Configurator</h1>
 <div style="display:flex;flex-direction:column">
-<div class="XS-dimension-selector">
-  <button (click)="onCustDimClick($event)">CUST</button>
-  <button (click)="onProdDimClick($event)">PROD</button>
-  <button (click)="onUsersDimClick($event)">USERS</button>
-</div>
-<div class="XS-hierarchies">
-  <!-- Node Description EDITOR-->
-  <ng-template #editor>
-    <span [ngClass]="addEditorClass()" (click)="editDimensionLevel()"></span>
-    {{ activeItem.dataItem.text }}
-  </ng-template>
+  <div class="XS-dimension-selector">
+    <button (click)="onCustDimClick($event)">CUST</button>
+    <button (click)="onProdDimClick($event)">PROD</button>
+    <button (click)="onUsersDimClick($event)">USERS</button>
+  </div>
+  <div class="XS-hierarchies">
+    <!-- Node Description EDITOR-->
+    <ng-template #editor>
+      <span [ngClass]="addEditorClass()" (click)="editDimensionLevel()"></span>
+      {{ activeItem.dataItem.text }}
+    </ng-template>
 
-  <!-- Treeview for DIMENSIONS -->
-  <kendo-treeview
-    #dimensions
-    [nodes]="selectedDimension"
-    textField="text"
-    kendoTreeViewHierarchyBinding
-    childrenField="items"
-    kendoTreeViewExpandable
-    expandBy="id"
-    [expandedKeys]="[1]"
-    [dropZoneTreeViews]="[hierarchies]"
-    (selectionChange)="edit($event)"
-    kendoTreeViewDragAndDrop
-    kendoTreeViewDragAndDropEditing
-    (nodeDragStart)="log('nodeDragStart', $event)"
-    (nodeDrag)="log('nodeDrag', $event)"
-    (nodeDrop)="handleDrop($event)"
-    (addItem)="log('addItem', $event)"
-    (removeItem)="log('removeItem', $event)"
-    (nodeDragEnd)="log('nodeDragEnd', $event)"
-  >
-    <ng-template kendoTreeViewNodeTemplate let-dataItem>
-      <div *ngIf="activeItem?.dataItem?.id !== dataItem.id; else editor">
-        <span [ngClass]="iconClass(dataItem)"></span>
-        {{ dataItem.text }}
-        <span
-          [ngClass]="addIconClass(dataItem)"
-          (click)="addDimensionLevel(dataItem)"
-        ></span>
-      </div>
-    </ng-template>
-    <ng-template
-      kendoTreeViewDragClueTemplate
-      let-action="action"
-      let-destinationItem="destinationItem"
-      let-text="text"
+    <!-- Treeview for DIMENSIONS -->
+    <kendo-treeview
+      #dimensions
+      [nodes]="selectedDimension"
+      textField="text"
+      kendoTreeViewHierarchyBinding
+      childrenField="items"
+      kendoTreeViewExpandable
+      expandBy="id"
+      [expandedKeys]="[1]"
+      [dropZoneTreeViews]="[hierarchies]"
+      (selectionChange)="edit($event)"
+      kendoTreeViewDragAndDrop
+      kendoTreeViewDragAndDropEditing
+      (nodeDragStart)="log('nodeDragStart', $event)"
+      (nodeDrag)="log('nodeDrag', $event)"
+      (nodeDrop)="handleDrop($event)"
+      (addItem)="log('addItem', $event)"
+      (removeItem)="log('removeItem', $event)"
+      (nodeDragEnd)="log('nodeDragEnd', $event)"
     >
-      <span
-        class="k-drag-status k-icon"
-        [ngClass]="getDragStatus(action, destinationItem)"
-      ></span>
-      <span>{{ text }}</span>
-    </ng-template>
-  </kendo-treeview>
+      <ng-template kendoTreeViewNodeTemplate let-dataItem>
+        <div *ngIf="activeItem?.dataItem?.id !== dataItem.id; else editor">
+          <span [ngClass]="iconClass(dataItem)"></span>
+          {{ dataItem.text }}
+          <span
+            [ngClass]="addIconClass(dataItem)"
+            (click)="addDimensionLevel(dataItem)"
+          ></span>
+        </div>
+      </ng-template>
+      <ng-template
+        kendoTreeViewDragClueTemplate
+        let-action="action"
+        let-destinationItem="destinationItem"
+        let-text="text"
+      >
+        <span
+          class="k-drag-status k-icon"
+          [ngClass]="getDragStatus(action, destinationItem)"
+        ></span>
+        <span>{{ text }}</span>
+      </ng-template>
+    </kendo-treeview>
 
-  <!-- Treeview for HIERARCHIES -->
-  <kendo-treeview
-    #hierarchies
-    id="trwHierarchy"
-    [nodes]="data.hierarchies"
-    textField="text"
-    kendoTreeViewHierarchyBinding
-    childrenField="items"
-    kendoTreeViewExpandable
-    expandBy="id"
-    [expandedKeys]="[1]"
-    kendoTreeViewDragAndDrop
-    kendoTreeViewDragAndDropEditing
-    (nodeDragStart)="log('nodeDragStart', $event)"
-    (nodeDrag)="log('nodeDrag', $event)"
-    (nodeDrop)="handleDrop($event)"
-    (addItem)="log('addItem', $event)"
-    (removeItem)="log('removeItem', $event)"
-    (nodeDragEnd)="log('nodeDragEnd', $event)"
-  >
-    <ng-template kendoTreeViewNodeTemplate let-dataItem>
-      <div>
-        <span [ngClass]="iconClass(dataItem)"></span>
-        <span>{{ dataItem.text }}</span>
-        <span
-          [ngClass]="addIconClass(dataItem)"
-          (click)="addHierarchy(dataItem)"
-        ></span>
-      </div>
-    </ng-template>
-    <ng-template
-      kendoTreeViewDragClueTemplate
-      let-action="action"
-      let-destinationItem="destinationItem"
-      let-text="text"
+    <!-- Treeview for HIERARCHIES -->
+    <kendo-treeview
+      #hierarchies
+      id="trwHierarchy"
+      [nodes]="selectedHierarchies"
+      textField="text"
+      kendoTreeViewHierarchyBinding
+      childrenField="items"
+      kendoTreeViewExpandable
+      expandBy="id"
+      [expandedKeys]="[1]"
+      kendoTreeViewDragAndDrop
+      kendoTreeViewDragAndDropEditing
+      (nodeDragStart)="log('nodeDragStart', $event)"
+      (nodeDrag)="log('nodeDrag', $event)"
+      (nodeDrop)="handleDrop($event)"
+      (addItem)="log('addItem', $event)"
+      (removeItem)="log('removeItem', $event)"
+      (nodeDragEnd)="log('nodeDragEnd', $event)"
     >
-      <span
-        class="k-drag-status k-icon"
-        [ngClass]="getDragStatus(action, destinationItem)"
-      ></span>
-      <span>{{ text }}</span>
-    </ng-template>
-  </kendo-treeview>
-</div>
-<div id="dimensionForm" *ngIf="dimensionForm">
-  <form [formGroup]="dimensionForm">
-    <label for="dimensionCode">Dimension Code: </label>
-    <input id="dimensionCode" type="text" formControlName="dimensionCode" />
-    <label for="dimensionDescription">Dimension Description: </label>
-    <input id="dimensionDescription" type="text" formControlName="dimensionDescription" />
-  </form>
-</div>
-<div id="hierarchyForm"></div>
+      <ng-template kendoTreeViewNodeTemplate let-dataItem>
+        <div>
+          <span [ngClass]="iconClass(dataItem)"></span>
+          <span>{{ dataItem.text }}</span>
+          <span
+            [ngClass]="addIconClass(dataItem)"
+            (click)="addHierarchy(dataItem)"
+          ></span>
+        </div>
+      </ng-template>
+      <ng-template
+        kendoTreeViewDragClueTemplate
+        let-action="action"
+        let-destinationItem="destinationItem"
+        let-text="text"
+      >
+        <span
+          class="k-drag-status k-icon"
+          [ngClass]="getDragStatus(action, destinationItem)"
+        ></span>
+        <span>{{ text }}</span>
+      </ng-template>
+    </kendo-treeview>
+  </div>
+  <div id="dimensionForm" *ngIf="dimensionForm">
+    <form [formGroup]="dimensionForm">
+      <label for="dimensionCode">Dimension Code: </label>
+      <input id="dimensionCode" type="text" formControlName="dimensionCode" />
+      <label for="dimensionDescription">Dimension Description: </label>
+      <input
+        id="dimensionDescription"
+        type="text"
+        formControlName="dimensionDescription"
+      />
+    </form>
+  </div>
+  <div id="hierarchyForm"></div>
 </div>

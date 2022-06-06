@@ -4,69 +4,174 @@ export interface IDimensionNode {
   id: number;
   text: string;
   isRoot: boolean;
+  dimensionCode: string;
   items: { id: number; text: string }[];
 }
 
+export interface IHierDimension {
+  Id: number;
+  DimensionCode: string;
+  Organization: string;
+  Description: string;
+}
+
+export interface IHierDimensionLevel {
+  Id: number;
+  DimensionCode: string;
+  Organization: string;
+  LevelCode: string;
+  Description: string;
+  TableCode: string;
+  SourceAttribute: string;
+  IsNodesGenerationEnabled: number;
+  SourceEntity: string;
+}
+
+export interface IHierarchy {
+  Id: number;
+  DimensionCode: string;
+  HierarchyCode: string;
+  Organization: string;
+  Description: string;
+  MinLevels: number;
+  TotalLevels: number;
+  IsEditable: number;
+  IsTimeRelated: number;
+}
+
+export interface IHierarchyLevel {
+  Id: number;
+  DimensionCode: string;
+  HierarchyCode: string;
+  Organization: string;
+  LevelId: number;
+  LevelCode: string;
+  EnableGenerateParentRelation: number;
+  IsTimeRelated: number;
+}
+
 export class serverData {
-  public addDimensionLevel(): void {
-    const nextId =
-      maxBy(this.customerLevels[0].items, (item) => {
-        return item.id;
-      }).id + 1;
-    const dim = { id: nextId, text: 'New Dimension' };
-    this.customerLevels[0]['items'].push(dim);
-  }
-  public addHierarchy(): void {
-    const nextId =
-      maxBy(this.hierarchies[0].items, (item) => {
-        return item['id'];
-      })['id'] + 1;
-    const hier = { id: nextId, text: 'New Hierarchy', items: [] };
-    this.hierarchies[0]['items'].push(hier);
+  public getDimensionLevelNodes(
+    dimensionCode: string,
+    division: string = 'E001'
+  ): IDimensionNode[] {
+    const dimensionLevelNodes: IDimensionNode[] = [];
+    const hierDimension = this.HierDimensions.find(
+      (item) =>
+        item.DimensionCode === dimensionCode && item.Organization === division
+    );
+    if (!hierDimension) return dimensionLevelNodes;
+
+    const dimensionLevelNode: IDimensionNode = {} as IDimensionNode;
+    dimensionLevelNode.id = hierDimension.Id;
+    dimensionLevelNode.dimensionCode = hierDimension.DimensionCode;
+    dimensionLevelNode.isRoot = true;
+    dimensionLevelNode.items = [];
+    dimensionLevelNode.text = hierDimension.Description;
+    dimensionLevelNodes.push(dimensionLevelNode);
+    this.HierDimensionLevels.filter(
+      (item) =>
+        item.DimensionCode === dimensionCode && item.Organization === division
+    ).forEach((item) => {
+      dimensionLevelNode.items.push({ id: item.Id, text: item.Description });
+    });
+    return dimensionLevelNodes;
   }
 
-  public customerLevels: IDimensionNode[] = [
-    {
-      id: 10,
-      text: 'Customer',
-      isRoot: true,
-      items: [
-        { id: -1, text: 'Ship-To' },
-        { id: 0, text: 'Planning Account' },
-        { id: 1, text: 'Sold-To' },
-        { id: 2, text: 'Level 2' },
-        { id: 3, text: 'Level 3' },
-        { id: 4, text: 'Level 4' },
-        { id: 5, text: 'Level 5' },
-        { id: 6, text: 'Total Customer' },
-      ],
-    },
-  ];
+  public getHierarchies(
+    dimensionCode: string,
+    division: string = 'E001'
+  ): IDimensionNode[] {
+    const hierarchyNodes: IDimensionNode[] = [];
 
-  public userLevels: IDimensionNode[] = [
-    {
-      id: 10,
-      text: 'User',
-      isRoot: true,
-      items: [{ id: 0, text: 'Users' }],
-    },
-  ];
-  public productLevels: IDimensionNode[] = [
-    {
-      id: 10,
-      text: 'Product',
-      isRoot: true,
-      items: [
-        { id: 0, text: 'Product SKU' },
-        { id: 1, text: 'Product Consumer Unit' },
-        { id: 2, text: 'Planning Group' },
-        { id: 3, text: 'Level 2' },
-        { id: 4, text: 'Level 3' },
-        { id: 5, text: 'Level 4' },
-        { id: 6, text: 'Level 5' },
-      ],
-    },
-  ];
+    const dimensionLevelNode: IDimensionNode = {} as IDimensionNode;
+    dimensionLevelNode.id = 9999;
+    dimensionLevelNode.dimensionCode = dimensionCode;
+    dimensionLevelNode.isRoot = true;
+    dimensionLevelNode.items = [];
+    dimensionLevelNode.text = 'Hierarchies';
+    hierarchyNodes.push(dimensionLevelNode);
+
+    const hierarchies = this.Hierarchies.filter(
+      (item) =>
+        item.DimensionCode === dimensionCode && item.Organization === division
+    );
+    if (!hierarchies) return hierarchyNodes;
+
+    hierarchies.forEach((hierarchy) => {
+      const hierarchyNode = {
+        id: hierarchy.Id,
+        text: hierarchy.Description,
+        items: [],
+      };
+      this.HierarchyLevels.filter(
+        (item) =>
+          item.DimensionCode === dimensionCode &&
+          item.Organization === division &&
+          item.HierarchyCode === hierarchy.HierarchyCode
+      ).forEach((item) => {
+        const dimensionLevel = this.HierDimensionLevels.find(
+          (dl) =>
+            dl.DimensionCode == item.DimensionCode &&
+            dl.Organization === division &&
+            dl.LevelCode == item.LevelCode
+        );
+        if (!dimensionLevel) return;
+        hierarchyNode.items.push({
+          id: item.LevelId,
+          text: dimensionLevel.Description,
+        });
+      });
+      dimensionLevelNode.items.push(hierarchyNode);
+    });
+
+    return hierarchyNodes;
+  }
+
+  public addDimensionLevel(dimensionCode: string, division: string): void {
+    const dimensionItems = this.HierDimensionLevels.filter(
+      (item) =>
+        item.DimensionCode === dimensionCode && item.Organization === division
+    );
+    const nextLevelCode =
+      +maxBy(dimensionItems, (item) => {
+        return +item.LevelCode;
+      }).LevelCode + 1;
+
+    const nextId =
+      maxBy(dimensionItems, (item) => {
+        return item.Id;
+      }).Id + 1;
+    const newDimensionLevel: IHierDimensionLevel = {} as IHierDimensionLevel;
+    newDimensionLevel.Id = nextId;
+    newDimensionLevel.DimensionCode = dimensionCode;
+    newDimensionLevel.Description = 'New Level';
+    newDimensionLevel.Organization = division;
+    newDimensionLevel.IsNodesGenerationEnabled = 0;
+    this.HierDimensionLevels.push(newDimensionLevel);
+  }
+
+  public addHierarchy(dimensionCode: string, division: string): void {
+    const hierarchyItems = this.Hierarchies.filter(
+      (item) =>
+        item.DimensionCode === dimensionCode && item.Organization === division
+    );
+    const nextId =
+      maxBy(hierarchyItems, (item) => {
+        return item.Id;
+      }).Id + 1;
+    const newHierarchy: IHierarchy = {} as IHierarchy;
+    newHierarchy.Id = nextId;
+    newHierarchy.DimensionCode = dimensionCode;
+    newHierarchy.HierarchyCode = 'NEWHIER';
+    newHierarchy.Description = 'New Hierarchy';
+    newHierarchy.Organization = division;
+    newHierarchy.IsEditable = 0;
+    newHierarchy.IsTimeRelated = 0;
+    newHierarchy.TotalLevels = 0;
+    newHierarchy.MinLevels = -1;
+    this.Hierarchies.push(newHierarchy);
+  }
 
   public hierarchies: any[] = [
     {
@@ -102,8 +207,7 @@ export class serverData {
     },
   ];
 
-
-  public HierDimensionLevels: any[] = [
+  public HierDimensionLevels: IHierDimensionLevel[] = [
     {
       Id: 873871,
       DimensionCode: 'CUST',
@@ -3339,7 +3443,7 @@ export class serverData {
       SourceEntity: 'USERS',
     },
   ];
-  public HierDimensions: any[] = [
+  public HierDimensions: IHierDimension[] = [
     {
       Id: 67018,
       DimensionCode: 'CUST',
@@ -3575,7 +3679,7 @@ export class serverData {
       Description: 'Utenti',
     },
   ];
-  public Hierarchies: any[] = [
+  public Hierarchies: IHierarchy[] = [
     {
       Id: 141216,
       DimensionCode: 'CUST',
@@ -4424,7 +4528,7 @@ export class serverData {
       IsTimeRelated: 0,
     },
   ];
-  public HierarchyLevels: any[] = [
+  public HierarchyLevels: IHierarchyLevel[] = [
     {
       Id: 363768,
       DimensionCode: 'CUST',

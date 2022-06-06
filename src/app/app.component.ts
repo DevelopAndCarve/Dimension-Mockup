@@ -25,11 +25,13 @@ export class AppComponent implements AfterViewInit {
   public focusIndex: string;
   public textFormControl: FormControl;
   public selectedDimension: IDimensionNode[];
-
+  public selectedHierarchies: IDimensionNode[];
+  public selectedDimensionCode: string = 'CUST';
   public dimensionForm: FormGroup;
 
   public ngAfterViewInit(): void {
-    this.selectedDimension = this.data.customerLevels;
+    this.selectedDimension = this.data.getDimensionLevelNodes('CUST');
+    this.selectedHierarchies = this.data.getHierarchies('CUST');
   }
 
   public iconClass({ text }: any): any {
@@ -69,12 +71,19 @@ export class AppComponent implements AfterViewInit {
     this.log('nodeDrop', event);
     this.log('nodeDrop Target', event.destinationItem.item);
   }
+
   public addDimensionLevel(node: any) {
-    this.data.addDimensionLevel();
+    this.data.addDimensionLevel(this.selectedDimensionCode, 'E001');
+    this.selectedDimension = this.data.getDimensionLevelNodes(
+      this.selectedDimensionCode
+    );
   }
 
   public addHierarchy(node: any) {
-    this.data.addHierarchy();
+    this.data.addHierarchy(this.selectedDimensionCode, 'E001');
+    this.selectedHierarchies = this.data.getHierarchies(
+      this.selectedDimensionCode
+    );
   }
 
   public addIconClass(node: any) {
@@ -96,89 +105,35 @@ export class AppComponent implements AfterViewInit {
     if (this.activeItem && this.activeItem.dataItem === item.dataItem) {
       return;
     }
-
     this.activeItem = item;
-
-
-    this.focusEditor = true; // focus editor on next render
-    this.focusIndex = item.index; // book keeping of the edited node index
-
-    this.textFormControl = new FormControl(
-      item.dataItem.text,
-      Validators.required
-    );
   }
 
+  /**
+   * Create the form for editing the selected Dimension Level
+   */
   public editDimensionLevel(): void {
     this.dimensionForm = new FormGroup({
       textFormControl: new FormControl(
         this.activeItem.dataItem.text,
         Validators.required
-      )
+      ),
     });
   }
 
-  public cancel(): void {
-    this.activeItem = null;
-    this.textFormControl = null;
-  }
-
-  public save(): void {
-    const { dataItem } = this.activeItem;
-
-    // return focus to input if invalid
-    if (this.textFormControl.invalid) {
-      this.focusEditor = true;
-      return;
-    }
-
-    // update the corresponding dataitem property
-    dataItem.text = this.textFormControl.value;
-
-    // close the editor
-    this.cancel();
-  }
-
-  public handleEditorEnter(event: any): void {
-    // prevent reopening the editor due to enter press
-    event.stopPropagation();
-
-    // persist the changes
-    this.save();
-  }
-
-  public handleEditorFocusOut(
-    event: FocusEvent,
-    editorContainer: HTMLElement
-  ): void {
-    const focusTarget = event.relatedTarget as HTMLElement;
-
-    // close the editor if the new focus target is not part of it
-    if (!editorContainer.contains(focusTarget)) {
-      this.cancel();
-    }
-  }
-
   public onCustDimClick(eventData: any) {
+    this.selectedDimensionCode = 'CUST';
     this.switchDimension('CUST');
   }
   public onProdDimClick(eventData: any) {
+    this.selectedDimensionCode = 'PROD';
     this.switchDimension('PROD');
   }
   public onUsersDimClick(eventData: any) {
-    this.switchDimension('USERS');
+    this.selectedDimensionCode = 'USER';
+    this.switchDimension('USER');
   }
   private switchDimension(dimension: string) {
-    switch (dimension) {
-      case 'CUST':
-        this.selectedDimension = this.data.customerLevels;
-        break;
-      case 'PROD':
-        this.selectedDimension = this.data.productLevels;
-        break;
-      case 'USERS':
-        this.selectedDimension = this.data.userLevels;
-        break;
-    }
+    this.selectedDimension = this.data.getDimensionLevelNodes(dimension);
+    this.selectedHierarchies = this.data.getHierarchies(dimension);
   }
 }
